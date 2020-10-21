@@ -20,7 +20,7 @@ After filtering the reads, we are ready for assemblies. We do assemblies through
 nohup flye --nano-raw trimmed_plasmid_reads.fastq -t 10 --meta -o flyeoutputRS
 ```
 After that, we want to polish our assemblies using the long read polisher Medaka. It takes both the trimmed_plasmid_reads.fastq file from nanofilt as well as the assembly.fasta file following assembly with Flye. It is recommended for best results to specify which model you were using.
-``
+```
 medaka_consensus -i trimmed_plasmid_reads.fastq -d /flyeoutputRS/assembly.fasta -o medakaoutput RS -t 10 -m -r103_min_high_g360
 ```
 
