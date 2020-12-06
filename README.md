@@ -42,13 +42,16 @@ For the next step (minipolish) we need the sam file from gerenuq to become a fas
 ```
 samtools fasta gfilteredminimap2contig170.sam > gfilteredminimap2contig.fa
 ```
-Next we use minipolish. 
+Next we use minipolish. Tip to future self: remember how iffy the gfa file is and how after you pull it out, you have to make it into a gfa2 file (gfakluge) first and then in front of every edge_170 you have to put the letter l (ex. edge_170l). You also have to delete that number on the top of the file indicating length of sequence. And then somehow it just works.
 
+```
+./gfatools view -l edge_170 -r assembly.gfa > contig_170.gfa
+```
 ```
 minipolish --skip_initial -t 8 gfilteredminimap2contig.fa g2contig170.gfa > minipolishedcontig170.gfa
 ```
 
-Next we use medaka
+Next we use medaka to get a consensus sequence. 
 
 ```
 medaka_consensus -i gfilteredminimap2contig.fa -d contig_170.fa -o medakacontig170
@@ -58,7 +61,7 @@ Now we use minimap2 again!!!
 ```
 minimap2 -a ./medakacontig170/consensus.fasta gfilteredminimap2contig.fa > Gfiltmedakaminimap2.sam
 ```
-Now we need to convert to bam
+Now we need to convert to bam for mosdepth.
 
 ```
 samtools view -bS Gfiltmedakaminimap2.sam > Gfiltmedakaminimap2.bam
@@ -77,6 +80,6 @@ After mosdepth, you are going to want to unzip the mosdepthoutput.regions.bed fi
 ``` 
 gunzip mosdepthoutput.regions.bed.gz
 ```
-and then you can scp that file over to your local machine and use R to make a line graph!
+and then you can scp that file over to your local machine and use R to make a line graph! 
 
 The end :)
