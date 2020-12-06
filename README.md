@@ -23,5 +23,60 @@ After that, we want to polish our assemblies using the long read polisher [Medak
 ```
 medaka_consensus -i trimmed_plasmid_reads.fastq -d /flyeoutputRS/assembly.fasta -o medakaoutput RS -t 10 -m -r103_min_high_g360
 ```
+Now comes time to validate our circular genomes
+
+First step is to pull out the specific fasta file for the circularized contig (ex. contig170). The numbers 6610, 8308 are found through another awk code which escapes me right now (ask Dan). But once we find which lines we are after, simply apply the code below and it will pull out only that sequence!
+```
+awk 'NR > 6610 && NR < 8308 {print $0}' assembly.fasta > contig_170.fasta
+```
+Then we use minimap2 to map our trimmed reads to the contig 170 fasta.
+```
+minimap2 -ax map-ont contig_170.fasta trimmed_reads.fa > minimap2contig170.sam
+```
+Now we use Gerenuq to do some filtering! 
+
+```
+gerenuq -i minimap2contig170.sam -o gfilteredminimap2contig170.sam -l 2000 -m 0.9
+```
+For the next step (minipolish) we need the sam file from gerenuq to become a fasta file.
+```
+samtools fasta gfilteredminimap2contig170.sam > gfilteredminimap2contig.fa
+```
+Next we use minipolish. 
+
+```
+minipolish --skip_initial -t 8 gfilteredminimap2contig.fa g2contig170.gfa > minipolishedcontig170.gfa
+```
+
+Next we use medaka
+
+```
+medaka_consensus -i gfilteredminimap2contig.fa -d contig_170.fa -o medakacontig170
+```
+Now we use minimap2 again!!!
+
+```
+minimap2 -a ./medakacontig170/consensus.fasta gfilteredminimap2contig.fa > Gfiltmedakaminimap2.sam
+```
+Now we need to convert to bam
+
+```
+samtools view -bS Gfiltmedakaminimap2.sam > Gfiltmedakaminimap2.bam
+
+```
+Then we need to sort the bam file
+```
+samtools sort Gfiltmedakaminimap2.bam -o test_sorted.bam
+```
+Now we are ready to use mosdepth!
+```
+mosdepth --by 1000 mosdepthoutput testsorted.bam
+```
+After mosdepth, you are going to want to unzip the mosdepthoutput.regions.bed file
+
+``` 
+gunzip mosdepthoutput.regions.bed.gz
+```
+and then you can scp that file over to your local machine and use R to make a line graph!
 
 The end :)
