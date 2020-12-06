@@ -23,7 +23,7 @@ After that, we want to polish our assemblies using the long read polisher [Medak
 ```
 medaka_consensus -i trimmed_plasmid_reads.fastq -d /flyeoutputRS/assembly.fasta -o medakaoutput RS -t 10 -m -r103_min_high_g360
 ```
-Now comes time to validate our circular genomes
+**Now comes time to validate our circular genomes**
 
 First step is to pull out the specific fasta file for the circularized contig (ex. contig170). The numbers 6610, 8308 are found through another awk code which escapes me right now (ask Dan). But once we find which lines we are after, simply apply the code below and it will pull out only that sequence!
 ```
