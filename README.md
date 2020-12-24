@@ -61,17 +61,22 @@ Now we use minimap2 again!!!
 ```
 minimap2 -a ./medakacontig170/consensus.fasta gfilteredminimap2contig.fa > Gfiltmedakaminimap2.sam
 ```
+even though I mapped the "filtered reads" against the polished genome, there will be lots of secondary alignments produced that need to be filtered by gerenuq - so you need to filter the SAM file again by gerenuq before converting to bam and calculating the coverage
+
+```
+gerenuq -i Gfiltmedakaminimap2.sam -o test.sam -l 2000 -m 0.9
+```
 Now we need to convert to bam for mosdepth.
 
 ```
-samtools view -bS Gfiltmedakaminimap2.sam > Gfiltmedakaminimap2.bam
+samtools view -bS test.sam > test.bam
 
 ```
 Then we need to sort the bam file
 ```
-samtools sort Gfiltmedakaminimap2.bam -o test_sorted.bam
+samtools sort test.bam -o test_sorted.bam
 ```
-Now we are ready to use mosdepth!
+Now we are ready to use mosdepth! (remember there are two dashes in --by 1000)
 ```
 mosdepth --by 1000 mosdepthoutput testsorted.bam
 ```
@@ -82,4 +87,4 @@ gunzip mosdepthoutput.regions.bed.gz
 ```
 and then you can scp that file over to your local machine and use R to make a line graph! 
 
-The end :)
+The end...for now :)
