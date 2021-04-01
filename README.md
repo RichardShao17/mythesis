@@ -1,5 +1,5 @@
 # Naphthenic Acid thesis
-# Author: Richard Shao
+## Author: Richard Shao
 
 This is where I will document all the code I used from the start to the end of my fourth year thesis in Biochemistry
 
