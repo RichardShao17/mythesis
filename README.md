@@ -1,8 +1,9 @@
-# mythesis
+# Naphthenic Acid thesis
+# Author: Richard Shao
 
-So this is where I will document all the code I used from the start to the end of my fourth year thesis in Biochemistry. Wahoo.
+This is where I will document all the code I used from the start to the end of my fourth year thesis in Biochemistry
 
-First things first, after the nanopore sequencing run we are left with 3 files: fast5_fail, fast5_pass and fast5_skip. The below code is capable of basecalling all three of those files (recursive). You will need to which specify which nanopore flowcell and kit was used. 
+After the nanopore sequencing run we are left with 3 files: fast5_fail, fast5_pass and fast5_skip. The below code is capable of basecalling all three of those files (recursive). You will need to which specify which nanopore flowcell and kit was used. 
 ```
 guppy_basecaller --input_path ./ --save_path ./guppyoutputRS --recursive --flowcell FLO-MIN111 --kit SQK-LSK109 -x "cuda:0"
 ```
@@ -11,7 +12,7 @@ After Guppy basecalling, you will have a file named sequencing_summary.txt. With
 ```
 NanoPlot --summary ./guppyoutputRS/sequencing_summary.txt --loglength -o nanoplot
 ```
-I used [NanoFilt](https://github.com/wdecoster/nanofilt) to remove any reads below an average q-score of 7 and length below 2000 bases. I also removed the first 50 bases from each read to ensure that no poor quality bases are included. There is absolutely no reason why the output file should be named "trimmed_plasmid_reads." This work was adapted from the great Dan Giguere ([the protocol is here](https://github.com/dgiguer/long-read-plasmid-assembly)) and this is what he used to name his file.
+I used [NanoFilt](https://github.com/wdecoster/nanofilt) to remove any reads below an average q-score of 7 and length below 2000 bases. I also removed the first 50 bases from each read to ensure that no poor quality bases are included. There is absolutely no reason why the output file should be named "trimmed_plasmid_reads." This work was adapted from the Dan Giguere ([the protocol is here](https://github.com/dgiguer/long-read-plasmid-assembly)) and this is what he used to name his file.
 ```
 NanoFilt -l 2000 -q 7 --headcrop 50 > ./trimmed_plasmid_reads.fastq
 ```
@@ -85,6 +86,6 @@ After mosdepth, you are going to want to unzip the mosdepthoutput.regions.bed fi
 ``` 
 gunzip mosdepthoutput.regions.bed.gz
 ```
-and then you can scp that file over to your local machine and use R to make a line graph! 
+and then you can scp that file over to your local machine and use R to make a line graph. 
 
-The end...for now :)
+
